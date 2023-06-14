@@ -19,7 +19,7 @@ function polindromeTrue (polindrome) {
 function polindromeTrue (polindrome) {
   const oldString = polindrome.toUpperCase().replaceAll(' ','');
   let newString = '';
-  for (i = oldString.length - 1; i >= 0; i--) {
+  for (let i = oldString.length - 1; i >= 0; i--) {
     newString += oldString.at(i);
   }
   return oldString === newString;
