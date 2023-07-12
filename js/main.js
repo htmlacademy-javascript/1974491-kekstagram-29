@@ -1,6 +1,6 @@
-/**тексты
+/**
+ * тексты
  * отсюда мы должны будем брать тексты комментария и использовать
- *
  */
 const MESSAGES = [
   'Всё отлично!',
@@ -11,9 +11,9 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
-/**имя пользователя
+/**
+ * имя пользователя
  * отсюда берем для структуры
- *
  */
 const USERS_NAME = [
   'Роман',
@@ -27,9 +27,9 @@ const USERS_NAME = [
   'Вераника-Чика-Чика'
 ];
 
-/**описание фотографий
+/**
+ * описание фотографий
  * отсуда берем описания фото
- *
  */
 const DESCRIPTIONS_PHOTO = [
   'Дождь',
@@ -43,9 +43,9 @@ const DESCRIPTIONS_PHOTO = [
   'Смысла нет'
 ];
 
-/**количество загруженных фотографий
+/**
+ * количество загруженных фотографий
  * устанавливаем количество загружаемых фотографий. Количество по заданию
- *
  */
 const NUMBER_OF_ALL_PHOTO = 25;
 
@@ -53,31 +53,32 @@ const NUMBER_OF_ALL_PHOTO = 25;
  * пределы выбраны по заданию
  *
  */
-const NUMBER_OF_LIKES = {
+const NumberOfLikes = {
   MIN: 15,
   MAX: 200,
 };
 
-/**количество комментариев
+/**
+ * количество комментариев
  * пределы выбраны по заданию
- *
  */
-const NUMBER_OF_ALL_COMMENTS = {
+const NumberOfAllComments = {
   MIN: 0,
   MAX: 30,
 };
 
-/**Количество аватарок
+/**
+ * Количество аватарок
  * пределы выбраны по заданию
- *
  */
-const NUMBER_OF_ALL_AVATAR = {
+const NumberOfAllAvatar = {
   MIN: 1,
   MAX: 6,
 };
 
 
-/**Функция для создания случайного числа в диапозоне от а до b
+/**
+ * Функция для создания случайного числа в диапозоне от а до b
  * @param {int} a - нижняя граница диапозона
  * @param {int} b - верхняя граница диапозона
  * @param {int} result - возвращает случайное число в диапозоне от а до b
@@ -90,18 +91,20 @@ const getRandomInteger = (a, b) => {
 };
 
 
-/**Функция для генерации случайного элемента массива
+/**
+ * Функция для генерации случайного элемента массива
  * @param {int} element - сам массив
  * @param {string} result - элемент массива element
  */
 const getRandomElements = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-/**Функция для генерации порядкого номера
+/**
+ * Функция для генерации порядкого номера
  * @param {int} result - порядковый номер
  */
 const getIdGenerator = () => {
   let firstGenerateId = 0;
-  return function () {
+  return () => {
     firstGenerateId += 1;
     return firstGenerateId;
   };
@@ -111,7 +114,8 @@ const generatePhotoId = getIdGenerator();
 const generatePhotoUrl = getIdGenerator();
 const generateCommentsId = getIdGenerator();
 
-/** Функция для создания комментария к фото
+/**
+  * Функция для создания комментария к фото
   * @param {int} id - идентификатор комментария
   * @param {string} avatar - это строка, значение которой формируется по правилу img/avatar-{{случайное число от 1 до 6}}.svg
   * @param {string} message - сам комментарий
@@ -119,36 +123,38 @@ const generateCommentsId = getIdGenerator();
   * @param {Array} return arrayComments[] - возвращает массив комментариев
 */
 const generateCommentsPhoto = () => {
-  const arrayComments = [];
-  for (let i = 0; i < getRandomInteger(NUMBER_OF_ALL_COMMENTS.MIN, NUMBER_OF_ALL_COMMENTS.MAX); i++) {
-    arrayComments.push({
+  const Comments = [];
+  for (let i = 0; i < getRandomInteger(NumberOfAllComments.MIN, NumberOfAllComments.MAX); i++) {
+    Comments.push({
       id: generateCommentsId(),
-      avatar: `img/avatar-${getRandomInteger(NUMBER_OF_ALL_AVATAR.MIN, NUMBER_OF_ALL_AVATAR.MAX)}.svg`,
+      avatar: `img/avatar-${getRandomInteger(NumberOfAllAvatar.MIN, NumberOfAllAvatar.MAX)}.svg`,
       message: getRandomElements(MESSAGES),
       name: getRandomElements(USERS_NAME),
     });
   }
-  return arrayComments;
+  return Comments;
 };
 
-/** Функция для создания объекта с описанием фотографии
+/**
+  * Функция для создания объекта с описанием фотографии
   * @param {int} id - идентификатор фотографии
   * @param {string} url - ссылка на фотографию
   * @param {string} description - описание фотографии
   * @param {int} likes - количество лайков
   * @param {Array} generateCommentsToPhoto() - массив комментариев
 */
-const getPhotoUsers = () => ({
+const generatePhoto = () => ({
   id: generatePhotoId(),
   url: `photos/${generatePhotoUrl()}.jpg`,
   description: getRandomElements(DESCRIPTIONS_PHOTO),
-  likes: getRandomInteger(NUMBER_OF_LIKES.MIN, NUMBER_OF_LIKES.MAX),
+  likes: getRandomInteger(NumberOfLikes.MIN, NumberOfLikes.MAX),
   comments: generateCommentsPhoto(),
 });
 
 
-/** Функция для создания массива объектов длиной NUMBER_OF_ALL_PHOTO с описанием фотографий
+/**
+ * Функция для создания массива объектов длиной NUMBER_OF_ALL_PHOTO с описанием фотографий
 */
-const getAllPhotoUsers = () => Array.from({ length: NUMBER_OF_ALL_PHOTO }, getPhotoUsers);
+const generatePhotos = () => Array.from({ length: NUMBER_OF_ALL_PHOTO }, generatePhoto);
 
-getAllPhotoUsers();
+generatePhotos();
