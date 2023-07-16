@@ -1,4 +1,4 @@
-import { getRandomElements, getRandomInteger } from "./utils.js";
+import { getRandomElements, getRandomInteger } from '../js/utils.js';
 
 /**
  * тексты
