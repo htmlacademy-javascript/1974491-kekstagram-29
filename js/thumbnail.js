@@ -11,10 +11,10 @@ const container = document.querySelector('.pictures');
  */
 const createThumbnail = ({coments, discription, likes, url}) =>{
   const thumbnail = pictureTemplate.cloneNode(true);
-  thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
+  thumbnail.querySelector('.picture__comments').textContent = coments.length;//количество комментариев через длину массива
   thumbnail.querySelector('.picture__img').alt = discription;//описание фото
   thumbnail.querySelector('.picture__likes').textContent = likes;//количество лайков
-  thumbnail.querySelector('.picture__comments').textContent = coments.length;//количество комментариев через длину массива
+  thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
   return(thumbnail);
 };
 
@@ -26,7 +26,7 @@ const createThumbnail = ({coments, discription, likes, url}) =>{
  *@returns {Element} возврат готового элемента для вставки в DOM
  */
 const generateThumbnails = (pictures) => {
-  const fragment = document.createDocumentFragment();//созда  м контейнер
+  const fragment = document.createDocumentFragment();//создаём контейнер
   pictures.forEach((picture) =>{ //
     const thumbnail = createThumbnail(picture); //
     fragment.append(thumbnail); //
