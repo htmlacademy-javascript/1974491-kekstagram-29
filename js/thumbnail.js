@@ -35,4 +35,4 @@ const generateThumbnails = (pictures) => {
 };
 
 // Не забыть экспортировать функции
-export{generateThumbnails};
+export { generateThumbnails };
