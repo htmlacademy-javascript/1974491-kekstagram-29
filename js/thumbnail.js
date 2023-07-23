@@ -1,4 +1,4 @@
-import { openBigPic } from '../js/big-picture.js';
+import { openBigPic } from './big-picture.js';
 
 // 1.что за шаблон #picture и куда его девать?
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');

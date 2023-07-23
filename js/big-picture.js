@@ -1,4 +1,4 @@
-import { EscKey } from '../js/functions.js';
+import { EscKey } from './functions.js';
 
 
 const fullSizePhoto = document.querySelector('.big-picture');
@@ -42,6 +42,7 @@ function onCloseButtonClick() {
  * @param {Array} comments - передаем массив комментарием для создания.
  */
 const renderComments = (comments) => {
+  commentsList.innerHTML = '';
   const commentsListFragment = document.createDocumentFragment();
   comments.forEach(({avatar, name, message}) => {
     const comment = commentItem.cloneNode(true);
