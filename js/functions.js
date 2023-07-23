@@ -39,6 +39,8 @@ const getWorkTimeMeeting = (startWork, endWork, startMeeting, timeMeeting) => ge
 
 /**
  * Функция обнаружения нажатия клавиши "Esc"
+ * @param {key} evt - нажата клавиша
+ * @returns {boolean} - ИСТИНА если клавиша "Esc"
  */
 const EscKey = (evt) => evt.key === 'Escape';
 

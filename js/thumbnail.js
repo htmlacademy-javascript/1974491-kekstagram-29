@@ -18,6 +18,10 @@ const createThumbnail = ({coments, discription, likes, url}) =>{
   thumbnail.querySelector('.picture__img').alt = discription;//описание фото
   thumbnail.querySelector('.picture__likes').textContent = likes;//количество лайков
   thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
+  thumbnail.addEventListener('click', () => {
+    openBigPic({url, likes, discription,comments});
+  });
+
   return(thumbnail);
 };
 
