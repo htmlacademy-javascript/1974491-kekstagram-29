@@ -1,7 +1,10 @@
+import { openBigPic } from '../js/big-picture.js';
+
 // 1.что за шаблон #picture и куда его девать?
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 // 1.1. находим элементы с классом .picture и присваиваем его container
 const container = document.querySelector('.pictures');
+
 
 // 2.Как и чем заполнить данными для фотографии?
 /**
