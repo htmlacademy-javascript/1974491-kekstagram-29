@@ -12,14 +12,14 @@ const container = document.querySelector('.pictures');
  *@param {object} объект, который передаёт комментарии, описания, кол-во лайков и урл
  *@returns {Element} возвращкаем thumbnailзаполненный параметрами
  */
-const createThumbnail = ({coments, discription, likes, url}) =>{
+const createThumbnail = ({comments, discription, likes, url}) =>{
   const thumbnail = pictureTemplate.cloneNode(true);
-  thumbnail.querySelector('.picture__comments').textContent = coments.length;//количество комментариев через длину массива
+  thumbnail.querySelector('.picture__comments').textContent = comments.length;//количество комментариев через длину массива
   thumbnail.querySelector('.picture__img').alt = discription;//описание фото
   thumbnail.querySelector('.picture__likes').textContent = likes;//количество лайков
   thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
   thumbnail.addEventListener('click', () => {
-    openBigPic({url, likes, discription,comments});
+    openBigPic({url, likes, discription, comments});
   });
 
   return(thumbnail);
