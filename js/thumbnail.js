@@ -1,7 +1,10 @@
+import { openBigPic } from '../js/big-picture.js';
+
 // 1.что за шаблон #picture и куда его девать?
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 // 1.1. находим элементы с классом .picture и присваиваем его container
 const container = document.querySelector('.pictures');
+
 
 // 2.Как и чем заполнить данными для фотографии?
 /**
@@ -9,12 +12,16 @@ const container = document.querySelector('.pictures');
  *@param {object} объект, который передаёт комментарии, описания, кол-во лайков и урл
  *@returns {Element} возвращкаем thumbnailзаполненный параметрами
  */
-const createThumbnail = ({coments, discription, likes, url}) =>{
+const createThumbnail = ({comments, discription, likes, url}) =>{
   const thumbnail = pictureTemplate.cloneNode(true);
-  thumbnail.querySelector('.picture__comments').textContent = coments.length;//количество комментариев через длину массива
+  thumbnail.querySelector('.picture__comments').textContent = comments.length;//количество комментариев через длину массива
   thumbnail.querySelector('.picture__img').alt = discription;//описание фото
   thumbnail.querySelector('.picture__likes').textContent = likes;//количество лайков
   thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
+  thumbnail.addEventListener('click', () => {
+    openBigPic({url, likes, discription, comments});
+  });
+
   return(thumbnail);
 };
 

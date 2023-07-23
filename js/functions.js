@@ -37,4 +37,12 @@ const getTimeInMinutes = (time) => {
  */
 const getWorkTimeMeeting = (startWork, endWork, startMeeting, timeMeeting) => getTimeInMinutes(startWork) <= getTimeInMinutes(startMeeting) && getTimeInMinutes(startMeeting) <= (getTimeInMinutes(endWork) - timeMeeting);
 
-export {polindromeTrue, lengthCheck, getWorkTimeMeeting};
+/**
+ * Функция обнаружения нажатия клавиши "Esc"
+ * @param {key} evt - нажата клавиша
+ * @returns {boolean} - ИСТИНА если клавиша "Esc"
+ */
+const EscKey = (evt) => evt.key === 'Escape';
+
+
+export {polindromeTrue, lengthCheck, getWorkTimeMeeting, EscKey};
