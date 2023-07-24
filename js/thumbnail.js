@@ -1,12 +1,8 @@
 import { openBigPic } from './big-picture.js';
 
-// 1.что за шаблон #picture и куда его девать?
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-// 1.1. находим элементы с классом .picture и присваиваем его container
 const container = document.querySelector('.pictures');
 
-
-// 2.Как и чем заполнить данными для фотографии?
 /**
  *Функция для создания шаблона
  *@param {object} объект, который передаёт комментарии, описания, кол-во лайков и урл
@@ -26,8 +22,6 @@ const createThumbnail = ({comments, discription, likes, url, id}) =>{
   return(thumbnail);
 };
 
-
-// 3.Как отрисовать фотографии? Куда приткнуть DocumentFragment?
 /**
  *Функция для отрисовки мини-фото
  *@param {Array} массив фотографий, каждая должна содержать все необходимые параметры
@@ -42,5 +36,4 @@ const generateThumbnails = (pictures) => {
   container.append(fragment); //добавляем элемент в DOM
 };
 
-// Не забыть экспортировать функции
 export { generateThumbnails };
