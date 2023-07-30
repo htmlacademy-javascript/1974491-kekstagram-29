@@ -14,9 +14,9 @@ const createThumbnail = ({comments, discription, likes, url, id}) =>{
   thumbnail.querySelector('.picture__img').alt = discription;//описание фото
   thumbnail.querySelector('.picture__likes').textContent = likes;//количество лайков
   thumbnail.querySelector('.picture__img').src = url;//адрес ссылки
-  thumbnail.dataset.thumbnailId = id;
+  thumbnail.dataset.smallPhotoId = id;
   thumbnail.addEventListener('click', () => {
-    openBigPic({url, likes, discription, comments});
+    openBigPic({url, likes, discription, comments, id});
   });
 
   return(thumbnail);
@@ -29,7 +29,8 @@ const createThumbnail = ({comments, discription, likes, url, id}) =>{
  */
 const generateThumbnails = (pictures) => {
   const fragment = document.createDocumentFragment();//создаём контейнер
-  pictures.forEach((picture) =>{ //
+  const array = Array.from(pictures);
+  array.forEach((picture) =>{ //
     const thumbnail = createThumbnail(picture); //
     fragment.append(thumbnail); //
   });

@@ -1,5 +1,6 @@
-import { openBigPic } from './big-picture.js';
 import { generateThumbnails } from './thumbnail.js';
+import { openBigPic } from './big-picture.js';
+
 const container = document.querySelector('.pictures');
 
 const renderingGallery = (pictures) => {
