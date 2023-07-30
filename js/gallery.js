@@ -16,7 +16,7 @@ const renderingGallery = (pictures) => {
     openBigPic(picture);
   });
 
-  generateThumbnails(pictures. container);
+  generateThumbnails(pictures);
 };
 
 export { renderingGallery };
