@@ -87,6 +87,10 @@ function onCloseButtonClick() {
   closeBigPic();
 }
 
+const onCloseTargetClick = () => {
+  closeBigPic();
+};
+
 //Функция по отрисовки карточки при открытии в модалке
 const renderPictureInformation = ({url, likes, description}) => {
   fullSizePhoto.querySelector('.big-picture__img img').src = url;
@@ -132,6 +136,8 @@ const openBigPic = (data) => {
 commentsButttonLoad.addEventListener('click', () => {
   onCommentsLoadClick(comments);
 });
+
+closeButton.addEventListener('click', onCloseTargetClick);
 
 
 export { openBigPic, closeBigPic };
