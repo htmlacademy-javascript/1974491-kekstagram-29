@@ -1,4 +1,6 @@
-import {renderSuccussMessage, renderFailMessage} from './send-messages.js';
+import {renderFailMessage, renderSuccussMessage} from './send-messages.js';
+import {sendData} from './api.js';
+
 
 //используемые константы
 const HASHTAGS_SYMBOLS = /^#[a-zа-ё0-9]{1,19}$/i; //Символы для хэштега
@@ -9,6 +11,7 @@ const MIN_PERCENT_SCALE = '25%'; //минимальный процент мас�
 const STEP_PERCENT_SCALE = 25; //шаг процентов масштаба
 const DEVIDER_SCALE = 100; //делительная шкала
 
+const POST_URL = 'https://29.javascript.pages.academy/kekstagram';
 
 const img = document.querySelector('.img-upload__preview img');
 const input = document.querySelector('.scale__control--value');
@@ -20,6 +23,7 @@ const hashtagsField = document.querySelector('.text__hashtags');
 const uploadContainer = document.querySelector('.img-upload__overlay');
 const uploadFileInput = document.querySelector('.img-upload__input');
 const uploadFileCancel = document.querySelector('.img-upload__cancel');
+
 
 /**
  * Функция должна выбирать масштабирование
@@ -156,14 +160,14 @@ const openUploadFile = () => {
   addPristine();
 };
 
-const closeUploadFile = () => {
+function closeUploadFile () {
   form.reset();
   resetScale();
   resetPristine();
   uploadContainer.classList.add('hidden');
   document.body.classList.remove('.modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
-};
+}
 
 function onDocumentKeydown (evt) {
   if (evt.key === 'Escape' && !evt.target.closest('.text__hashtags') && !evt.target.closest('.text__description')) {
@@ -172,12 +176,23 @@ function onDocumentKeydown (evt) {
   }
 }
 
+const onSendSuccess = () => {
+  renderSuccussMessage();
+  closeUploadFile();
+};
+
+
+const onSendFail = () => {
+  renderFailMessage();
+};
+
 const onCancelButtonClick = () => closeUploadFile();
 const onFileInputChange = () => openUploadFile();
 
 const onFormSubmit = (evt) => {
-  if(!validatePristine()) {
-    evt.preventDefault ();
+  evt.preventDefault();
+  if (validatePristine()) {
+    sendData(POST_URL, onSendSuccess, onSendFail, new FormData(evt.target));
   }
 };
 
