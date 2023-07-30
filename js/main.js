@@ -1,5 +1,6 @@
 import { generatePhotos } from './data.js';
 import { generateThumbnails } from './thumbnail.js';
+import { addFormAction } from './form.js';
 
 generateThumbnails(generatePhotos());
 

@@ -87,7 +87,7 @@ function onCloseButtonClick() {
   closeBigPic();
 }
 
-const onCancelTargetClick = () => {
+const onCloseTargetClick = () => {
   closeBigPic();
 };
 
@@ -137,7 +137,7 @@ commentsButttonLoad.addEventListener('click', () => {
   onCommentsLoadClick(comments);
 });
 
-closeButton.addEventListener('click', onCancelTargetClick);
+closeButton.addEventListener('click', onCloseTargetClick);
 
 
 export { openBigPic, closeBigPic };
