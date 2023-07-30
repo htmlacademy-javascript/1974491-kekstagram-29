@@ -66,6 +66,7 @@ const closeBigPic = () => {
   bodyElement.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   closeButton.removeEventListener('click', onCloseButtonClick);
+  commentsShown = 0;
 };
 
 /**
@@ -97,6 +98,7 @@ const renderPictureInformation = ({url, likes, description}) => {
 //добавление комментов в список
 const onCommentsLoadClick = (dataComments) => {
   renderComments(dataComments);
+  commentsCount.textContent = `${commentsShown} из ${allCommentsCount.textContent} комментариев`;
 };
 
 
