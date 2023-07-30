@@ -29,7 +29,6 @@ const createThumbnail = ({comments, discription, likes, url, id}) =>{
  */
 const generateThumbnails = (pictures) => {
   const fragment = document.createDocumentFragment();//создаём контейнер
-
   pictures.forEach((picture) =>{ //
     const thumbnail = createThumbnail(picture); //
     fragment.append(thumbnail); //
