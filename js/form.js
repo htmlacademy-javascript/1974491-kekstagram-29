@@ -1,3 +1,5 @@
+import {renderSuccussMessage, renderFailMessage} from './send-messages.js';
+
 //используемые константы
 const HASHTAGS_SYMBOLS = /^#[a-zа-ё0-9]{1,19}$/i; //Символы для хэштега
 const MAX_COMMENTS_LENGTH = 140; //максимвальное количество комментариев
