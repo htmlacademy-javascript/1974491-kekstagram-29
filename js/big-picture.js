@@ -81,7 +81,7 @@ function onDocumentKeydown(evt) {
 }
 
 /**
- * Функция закрытия закрытия модального окна
+ * Функция закрытия закрытия модального
  */
 function onCloseButtonClick() {
   closeBigPic();
