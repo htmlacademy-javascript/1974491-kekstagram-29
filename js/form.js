@@ -1,206 +1,120 @@
-import {renderFailMessage, renderSuccussMessage} from './send-messages.js';
-import {sendData} from './api.js';
-
+import { resetEffect } from './form-effects.js';
+import { showSuccess } from './success.js';
+import { showError } from './error.js';
+import { resetScale } from './scale.js';
+import { EscKey } from './functions.js';
 
 //используемые константы
 const HASHTAGS_SYMBOLS = /^#[a-zа-ё0-9]{1,19}$/i; //Символы для хэштега
 const MAX_COMMENTS_LENGTH = 140; //максимвальное количество комментариев
 const MAX_HASHTAGS_COUNT = 5; //максимальное значение хэштегов
-const MAX_PERCENT_SCALE = '100%'; //максимвальный процент масштаба
-const MIN_PERCENT_SCALE = '25%'; //минимальный процент масштаба
-const STEP_PERCENT_SCALE = 25; //шаг процентов масштаба
-const DEVIDER_SCALE = 100; //делительная шкала
 
-const POST_URL = 'https://29.javascript.pages.academy/kekstagram';
+const body = document.querySelector('body');
+const imgUploadForm = document.querySelector('.img-upload__form');
 
-const img = document.querySelector('.img-upload__preview img');
-const input = document.querySelector('.scale__control--value');
-const biggerScale = document.querySelector('.scale__control--bigger');
-const smallerScale = document.querySelector('.scale__control--smaller');
-const form = document.querySelector('.img-upload__form');
-const commentField = document.querySelector('.text__description');
-const hashtagsField = document.querySelector('.text__hashtags');
-const uploadContainer = document.querySelector('.img-upload__overlay');
-const uploadFileInput = document.querySelector('.img-upload__input');
-const uploadFileCancel = document.querySelector('.img-upload__cancel');
+const inputUploadFile = document.querySelector('#upload-file');
+const imgUploadOverlay = document.querySelector('.img-upload__overlay');
+const uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
+const textHashtags = imgUploadOverlay.querySelector('.text__hashtags');
+const textDescription = imgUploadOverlay.querySelector('.text__description');
 
 
-/**
- * Функция должна выбирать масштабирование
- */
-const changeScale = (value) => {
-  img.style.transform = `scale(${+value.replace('%','') / DEVIDER_SCALE})`;
-};
-
-/**
- * функция уменьшения значения масштаба
- */
-const removeScale = () => {
-  if (input.value !== MIN_PERCENT_SCALE) {
-    input.value = `${+input.value.replace('%','') - STEP_PERCENT_SCALE}%`;
-    changeScale(input.value);
-  }
-};
-
-/**
- * Функция увеличения значения масштаба
- */
-const addScale = () => {
-  if (input.value !== MAX_PERCENT_SCALE) {
-    input.value = `${+input.value.replace('%','') + STEP_PERCENT_SCALE}%`;
-    changeScale(input.value);
-  }
-};
-
-/**
- * Функция активации изменений масштабирования. работает от клика по кнопочкам biggerScale & smallerScale
- */
-const activateScale = () => {
-  biggerScale.addEventListener('click', addScale);
-  smallerScale.addEventListener('click', removeScale);
-};
-
-/**
- * Функция перезапуска масштаба
- */
-const resetScale = () => changeScale(input.value);
-
-/**
- * Запуск ПРИСТИН
- */
-const pristine = new Pristine (form, {
+const pristine = new Pristine(imgUploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
-  errorTextCClass: 'img-upload__field-wrapper__error',
+  errorTextClass: 'text__error'
 });
 
-/**
- * Функция проверки длины комментария на длину максимвально возможную
- * @param {string} comment - комментарий длина меньше или равна максимвальной
- * @returns boolean
- */
-const isValidComment = (comment) => comment.length <= MAX_COMMENTS_LENGTH;
-
-
-/**
- * Функция формирования Хэштега
- * @param {string} value - введённая строка Хэштега. Из неё будем формировать правильный.
- * trim - метод удаляет из строки пробелы в начале и в конце
- * toLowerCase - метод преобразует в нижний регистр
- * split - убираем пробелы ' '  в средине строки
- * filter - метод позволяет отфильтровать элементы оставив только подходящие под определенное значение.
- * @returns
- */
-const createHashtagArray = (value) => value.trim().toLowerCase().split(' ').filter((item) => item);
-
-/**
- * Функция проверяет Хэштег на валидность
- * @param {*} value -
- * @returns boolean
- */
-const isValidHashtag = (value) => {
-  if (!value) {
-    return true;
+//Закрытие модального окна нажатием Esc
+const onDocumentKeydown = (evt) => {
+  if (evt.target === textHashtags || evt.target === textDescription) {
+    evt.stopPropagation();
+  } else {
+    if (EscKey(evt)) {
+      evt.preventDefault();
+      closeUploadOverlay();
+    }
   }
-
-  const hashtags = createHashtagArray(value);
-  return hashtags.every((test) => HASHTAGS_SYMBOLS.test(test));
 };
-
-const isValidCount = (value) => {
-  const hashtags = createHashtagArray(value);
-  return hashtags.length <= MAX_HASHTAGS_COUNT;
-};
-
-/**
- * Функция проверяет Хэштег на уникальность
- * @param {string} value - строка введенная
- * @returns
- */
-const isUniqueHashtags = (value) => {
-  const hashtags = createHashtagArray(value);
-  const uniqHashtags = new Set (hashtags);
-  return uniqHashtags.size === hashtags.length;
-};
-
-const addPristine = () => {
-  pristine.addValidator (
-    hashtagsField,
-    isValidHashtag,
-    'Хэштег должен начинаться с "#", содержать буквы и цифры (не более 20 символов, включая #)',
-  );
-
-  pristine.addValidator (
-    hashtagsField,
-    isUniqueHashtags,
-    'Хэштеги не должны повторяться',
-  );
-
-  pristine.addValidator (
-    hashtagsField,
-    isValidCount,
-    'Нельзя указывать больше 5 хэштегов',
-  );
-
-  pristine.addValidator (
-    commentField,
-    isValidComment,
-    'Длина комментария не должна превышать 140 символов',
-  );
-};
-
-const resetPristine = () => pristine.reset();
-const validatePristine = () => pristine.validate();
-
-const openUploadFile = () => {
-  uploadContainer.classList.remove('hidden');
-  document.body.classList.add('.modal-open');
+//Функция, открывающая модальное окно
+const onUploadFile = () => {
+  imgUploadOverlay.classList.remove('hidden');
+  body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
-  activateScale();
-  addPristine();
 };
-
-function closeUploadFile () {
-  form.reset();
+//Функция, закрывающая модальное окно
+function closeUploadOverlay() {
+  imgUploadForm.reset();
+  pristine.reset();
   resetScale();
-  resetPristine();
-  uploadContainer.classList.add('hidden');
-  document.body.classList.remove('.modal-open');
+  resetEffect();
+  imgUploadOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
 }
+//Событие, отслеживающее загрузку изображения
+inputUploadFile.addEventListener('change', onUploadFile);
+//Закрытие модального окна по клику
+uploadCancel.addEventListener('click', closeUploadOverlay);
 
-function onDocumentKeydown (evt) {
-  if (evt.key === 'Escape' && !evt.target.closest('.text__hashtags') && !evt.target.closest('.text__description')) {
-    evt.preventDefault();
-    closeUploadFile();
+//Функция, проверяющая лимит по символам у комментария
+const validateComment = (value) => value.length <= MAX_COMMENTS_LENGTH;
+
+pristine.addValidator(
+  textDescription,
+  validateComment,
+  'Длина комментария не может составлять больше 140 символов'
+);
+
+const getHashTags = (value) => value.replace(/ +/g, ' ').trim().split(' ');
+//Функция, проверяющая максимальное количество хэштегов
+const countHashTags = (value) => {
+  const hashTags = getHashTags(value);
+  return hashTags.length <= MAX_HASHTAGS_COUNT;
+};
+
+pristine.addValidator(
+  textHashtags,
+  countHashTags,
+  'Нельзя добавить больше 5 хэштегов'
+);
+
+//Функция, проверяющая правильность написания хэштега
+const checkSpellingHashtag = (value) => {
+  if (value !== '') {
+    const hashTags = getHashTags(value);
+    return hashTags.every((hashTag) => HASHTAGS_SYMBOLS.test(hashTag));
   }
-}
-
-const onSendSuccess = () => {
-  renderSuccussMessage();
-  closeUploadFile();
+  return true;
 };
 
+pristine.addValidator(
+  textHashtags,
+  checkSpellingHashtag,
+  'Хэштег должен начинаться с # и не может содержать пробелы, спецсимволы, символы пунктуации и смайлы'
+);
 
-const onSendFail = () => {
-  renderFailMessage();
+//Функция на проверку дубликатов хэштегов
+const checkDuplicateHashTags = (value) => {
+  const hashTags = getHashTags(value);
+  const lowerCaseHashTags = hashTags.map((hashTag) => hashTag.toLowerCase());
+  return lowerCaseHashTags.length === new Set(lowerCaseHashTags).size;
 };
 
-const onCancelButtonClick = () => closeUploadFile();
-const onFileInputChange = () => openUploadFile();
+pristine.addValidator(
+  textHashtags,
+  checkDuplicateHashTags,
+  'Хэштеги не должны повторяться'
+);
 
-const onFormSubmit = (evt) => {
+imgUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  if (validatePristine()) {
-    sendData(POST_URL, onSendSuccess, onSendFail, new FormData(evt.target));
+  if (pristine.validate()) {
+    showSuccess();
+    closeUploadOverlay();
+  } else {
+    showError();
   }
-};
+});
 
 
-const addFormAction = () => {
-  uploadFileInput.addEventListener('change', onFileInputChange);
-  uploadFileCancel.addEventListener('click', onCancelButtonClick);
-  form.addEventListener('submit', onFormSubmit);
-};
-
-export {addFormAction};
