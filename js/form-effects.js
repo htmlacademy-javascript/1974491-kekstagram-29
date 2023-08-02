@@ -1,5 +1,11 @@
-const imgUploadForm = document.querySelector('.img-upload__form');
-const sliderContainer = document.querySelector('.img-upload__effect-level');
+const CLASSES = [
+  'effects__preview--chrome',
+  'effects__preview--sepia',
+  'effects__preview--marvin',
+  'effects__preview--phobos',
+  'effects__preview--heat',
+  'effects__preview--none'
+];
 
 const EFFECTS = [
   {
@@ -52,8 +58,9 @@ const EFFECTS = [
   },
 ];
 
-const CLASSES = ['effects__preview--chrome', 'effects__preview--sepia', 'effects__preview--marvin', 'effects__preview--phobos', 'effects__preview--heat', 'effects__preview--none'];
 
+const imgUploadForm = document.querySelector('.img-upload__form');
+const sliderContainer = document.querySelector('.img-upload__effect-level');
 
 const imgUploadPreview = document.querySelector('.img-upload__preview img');
 

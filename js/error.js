@@ -1,4 +1,4 @@
-import { EscKey } from './functions.js';
+import { EscKey } from './utils.js';
 
 const body = document.querySelector('body');
 const errorFragment = document.createDocumentFragment();

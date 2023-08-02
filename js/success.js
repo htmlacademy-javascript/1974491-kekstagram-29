@@ -1,4 +1,5 @@
-import { EscKey } from './functions.js';
+import { EscKey } from './utils.js';
+import {closeUploadOverlay} from './user-modal.js';
 
 const body = document.querySelector('body');
 const successFragment = document.createDocumentFragment();
@@ -8,6 +9,7 @@ const successTemplate = document.querySelector('#success').content;
  * Функция, добавляющая попап Success на страницу
  */
 const showSuccess = () => {
+  closeUploadOverlay();
   const successPopup = successTemplate.cloneNode(true);
   successFragment.appendChild(successPopup);
   body.appendChild(successFragment);

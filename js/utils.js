@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 5000;
+
 /**
  * Функция для создания случайного числа в диапозоне от а до b
  * @param {int} a - нижняя граница диапозона
@@ -19,4 +21,26 @@ const getRandomInteger = (a, b) => {
  */
 const getRandomElements = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-export {getRandomElements, getRandomInteger};
+/**
+ * Функция обнаружения нажатия клавиши "Esc"
+ * @param {key} evt - нажата клавиша
+ * @returns {boolean} - ИСТИНА если клавиша "Esc"
+ */
+const EscKey = (evt) => evt.key === 'Escape';
+
+const alertFragment = document.createDocumentFragment();
+const alertTemplate = document.querySelector('#error-server').content;
+const body = document.querySelector('body');
+
+const showAlert = () => {
+  const alertMessage = alertTemplate.cloneNode(true);
+  alertFragment.appendChild(alertMessage);
+  body.appendChild(alertFragment);
+
+  setTimeout(() => {
+    const alertContainer = document.querySelector('.error-server');
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export {getRandomElements, getRandomInteger, showAlert, EscKey};

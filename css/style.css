@@ -1415,3 +1415,16 @@ main {
   font-size: 20px;
   font-weight: 500;
 }
+
+.error-server {
+  z-index: 100;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  padding: 15px;
+  font-size: 20px;
+  text-align: center;
+  text-shadow: rgb(255, 255, 255) 1px 0 0;
+  background-color: rgb(249, 100, 100);
+}
