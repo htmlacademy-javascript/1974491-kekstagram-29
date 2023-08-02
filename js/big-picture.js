@@ -1,143 +1,101 @@
 import { EscKey } from './functions.js';
 
-const COMMENTS_PER_PORTION = 5;
+const body = document.querySelector('body');
+const pictures = document.querySelector('.pictures');
+const bigPicture = document.querySelector('.big-picture');
+const bigPictureImg = bigPicture.querySelector('img');
+const cancel = document.querySelector('#picture-cancel');
+const likesCount = bigPicture.querySelector('.likes-count');
+const socialCaption = bigPicture.querySelector('.social__caption');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+const socialCommentCount = bigPicture.querySelector('.social__comment-count');
+const commentsCount = bigPicture.querySelector('.comments-count');
+const socialComments = bigPicture.querySelector('.social__comments');
+const socialComment = bigPicture.querySelector('.social__comment');
+const targetParent = '.picture';
 
-const fullSizePhoto = document.querySelector('.big-picture');//Большое всплывающее окно
-const bodyElement = document.querySelector('body');//
-const closeButton = fullSizePhoto.querySelector('.big-picture__cancel');//кнопка закрытия
-const commentsList = fullSizePhoto.querySelector('.social__comments');//список комментов
-const commentItem = commentsList.querySelector('.social__comment');//элемент списка комментов
-const commentsCount = fullSizePhoto.querySelector('.social__comment-count');//счетчик количества коментов
-const commentsButttonLoad = fullSizePhoto.querySelector('.comments-loader');//кнопка загрузки новой партии коментов
-const allCommentsCount = fullSizePhoto.querySelector('.comments-count');//счетчик количества всех комментариев
+const commentTemplate = socialComment.cloneNode(true);
+const similarCommentFragment = document.createDocumentFragment();
 
-let comments = [];
-let commentsShown = 0;
-
-/**
- * Функция создания одного комментария
- * @param {object}
- * @returns {object}
-*/
-const createComment = ({ avatar, name, message }) => {
-  const comment = commentItem.cloneNode(true);
-  const avatarPicture = comment.querySelector('.social__picture');
-  avatarPicture.src = avatar;
-  avatarPicture.alt = name;
-  comment.querySelector('.social__text').textContent = message;
-
-  return comment;
+//Рендер большого изображения, описания, лайков
+const renderBigPicture = (array) => {
+  similarCommentFragment.innerHTML = '';
+  socialComments.innerHTML = '';
+  const {url, description, likes, comments} = array;
+  bigPictureImg.src = url;
+  bigPictureImg.alt = description;
+  likesCount.textContent = likes;
+  socialCaption.textContent = description;
+  commentsCount.textContent = comments.length.toString();
+  renderComments(comments, 0);
 };
 
-/**
- * Функция создания-отрисовки массива-списка комментариев
- *
- */
-const renderComments = () => {
-  commentsShown += COMMENTS_PER_PORTION;
-  if (commentsShown >= comments.length) {
-    commentsButttonLoad.classList.add('hidden');
-    commentsShown = comments.length;
+//Рендер комментариев, загрузка новых комментариев по клику на "Загрузить еще"
+function renderComments (commentsArray, loadingComments) {
+  loadingComments += 5;
+  const commentsToShow = Math.min(commentsArray.length, loadingComments);
+  const newComments = commentsArray.slice(loadingComments - 5, commentsToShow);
+  for (let i = 0; i < newComments.length; i++) {
+    const commentElement = commentTemplate.cloneNode(true);
+    const {avatar, message} = newComments[i];
+    commentElement.querySelector('.social__picture').src = avatar;
+    commentElement.querySelector('.social__text').textContent = message;
+    similarCommentFragment.appendChild(commentElement);
+  }
+  socialCommentCount.textContent = `${commentsToShow} из ${commentsArray.length} комментариев`;
+  socialComments.appendChild(similarCommentFragment);
+
+  if (commentsToShow === commentsArray.length) {
+    commentsLoader.classList.add('hidden');
   } else {
-    commentsButttonLoad.classList.remove('hidden');
+    commentsLoader.classList.remove('hidden');
+    commentsLoader.addEventListener('click', OnMoreCommentsClick);
   }
 
-
-  const commentsFragment = document.createDocumentFragment();
-  commentsList.innerHTML = '';
-  for (let i = 0; i < commentsShown; i++) {
-    const comment = createComment(comments[i]);
-    commentsFragment.append(comment);
+  function OnMoreCommentsClick () {
+    renderComments(commentsArray, loadingComments);
+    commentsLoader.removeEventListener('click', OnMoreCommentsClick);
   }
+}
 
-  commentsList.append(commentsFragment);
-  commentsCount.textContent = commentsShown;
-  allCommentsCount.textContent = comments.length;
-};
 
-/**
- * функция закрытия картинок
- * добавляем класс .hidden обычным фото
- * убираем класс overflow-hidden
- *
- */
-const closeBigPic = () => {
-  fullSizePhoto.classList.add('hidden');
-  bodyElement.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  closeButton.removeEventListener('click', onCloseButtonClick);
-  commentsShown = 0;
-};
-
-/**
- * Функция закрытия большой картинки при нажатии Esc
- * @param {Event} evt - событие нажатие кнопки Esc
- */
-function onDocumentKeydown(evt) {
+//Закрытие попапа кнопкой Esc
+const onDocumentKeydown = (evt) => {
   if (EscKey(evt)) {
     evt.preventDefault();
-    closeBigPic();
+    closeBigPicture();
   }
+};
+
+//Функция открытие попапа
+const getPictureClick = (array) => {
+  const onPictureClick = (evt) => {
+    const target = evt.target;
+    const picture = target.closest(targetParent);
+    if (!picture) {
+      return;
+    }
+    evt.preventDefault();
+    bigPicture.classList.remove('hidden');
+    body.classList.add('modal-open');
+    document.addEventListener('keydown', onDocumentKeydown);
+    const currentPost = array.find(({id}) => (id).toString() === picture.dataset.id);
+    renderBigPicture(currentPost);
+  };
+  //Событие по клику, запускает попап
+  pictures.addEventListener('click', onPictureClick);
+};
+
+//Функция закрытия попапа
+function closeBigPicture() {
+  bigPicture.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
 }
 
-/**
- * Функция закрытия закрытия модального
- */
-function onCloseButtonClick() {
-  closeBigPic();
-}
-
-const onCloseTargetClick = () => {
-  closeBigPic();
-};
-
-//Функция по отрисовки карточки при открытии в модалке
-const renderPictureInformation = ({url, likes, description}) => {
-  fullSizePhoto.querySelector('.big-picture__img img').src = url;
-  fullSizePhoto.querySelector('.big-picture__img img').alt = description;
-  fullSizePhoto.querySelector('.likes-count').textContent = likes;
-  fullSizePhoto.querySelector('.social__caption').textContent = description;
-};
-
-//добавление комментов в список
-const onCommentsLoadClick = (dataComments) => {
-  renderComments(dataComments);
-  commentsCount.textContent = `${commentsShown} из ${allCommentsCount.textContent} комментариев`;
-};
-
-
-/**
- * Отрисовка модального окошка. Работаем с классами. Добавляем и убираем.
- * @param {int} id - идентификатор фотографии
- * @param {string} url - ссылка на фотографию
- * @param {string} description - описание фотографии
- * @param {int} likes - количество лайков
- * @param {Array} comments - массив комментариев делали в data.jsteComment(comments[i]);
-    commentsFragment.append(comment);
-  }
-
- */
-const openBigPic = (data) => {
-  commentsList.innerHTML = '';
-  comments = data.comments;
-  fullSizePhoto.classList.remove('hidden');
-  bodyElement.classList.add('modal-open');
-  commentsButttonLoad.classList.remove('hidden');
-  commentsCount.classList.remove('hidden');
-  document.addEventListener ('keydown', onDocumentKeydown);
-  renderPictureInformation(data);
-  renderComments(data.comments);
-
-  commentsCount.textContent = `${commentsShown} из ${allCommentsCount.textContent} комментариев`;
-
-};
-
-//Ждём click для запуска отрисовки
-commentsButttonLoad.addEventListener('click', () => {
-  onCommentsLoadClick(comments);
+//Событие по клику, закрывает попап
+cancel.addEventListener('click', () => {
+  closeBigPicture();
 });
 
-closeButton.addEventListener('click', onCloseTargetClick);
-
-
-export { openBigPic, closeBigPic };
+export {getPictureClick};
